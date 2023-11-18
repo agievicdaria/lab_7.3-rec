@@ -2,21 +2,25 @@
 #include <iomanip>
 using namespace std;
 
-int countNonZeroRows(int **a, int i, int k, int n) {
+bool hasZeroInRow(int *row, int n, int j) {
+    if (j >= n) {
+        return false;
+    }
+    if (row[j] == 0) {
+        return true;
+    }
+    return hasZeroInRow(row, n, j + 1);
+}
+
+int countNonZeroRows(int **a, int i, int k, int n, int j) {
     if (i >= k) {
         return 0;
     }
 
-    bool hasZero = false;
-    for (int j = 0; j < n; ++j) {
-        if (a[i][j] == 0) {
-            hasZero = true;
-            break;
-        }
-    }
+    bool hasZero = hasZeroInRow(a[i], n, j);
 
     int count = (hasZero ? 0 : 1);
-    return count + countNonZeroRows(a, i + 1, k, n);
+    return count + countNonZeroRows(a, i + 1, k, n, j);
 }
 
 void Input(int **a, const int rowCount, const int colCount, int i, int j) {
@@ -100,7 +104,7 @@ int main() {
     Input(a, rowCount, colCount, 0, 0);
     Print(a, rowCount, colCount, 0, 0);
 
-    cout << "Кількість рядків, що не містять жодного нульового елементу: " << countNonZeroRows(a, 0, rowCount, colCount) << endl;
+    cout << "Кількість рядків, що не містять жодного нульового елементу: " << countNonZeroRows(a, 0, rowCount, colCount, 0) << endl;
 
     int maxRepeated = -1;
     int maxCount = 0;
